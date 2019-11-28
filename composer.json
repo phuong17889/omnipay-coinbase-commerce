@@ -1,0 +1,36 @@
+{
+	"name" : "navatech/omnipay-coinbase-commerce",
+	"type" : "library",
+	"description" : "Coinbase Commerce driver for the Omnipay payment processing library",
+	"keywords" : [
+		"Coinbase Commerce",
+		"gateway",
+		"bitcoin",
+		"ethereum",
+		"merchant",
+		"omnipay",
+		"pay",
+		"payment"
+	],
+	"homepage" : "https://github.com/navatech/omnipay-coinbase-commerce",
+	"license" : "MIT",
+	"authors" : [
+		{
+			"name" : "Le Phuong",
+			"email" : "phuong17889@gmail.com"
+		}
+	],
+	"autoload" : {
+		"psr-4" : {
+			"Omnipay\\Coinbase Commerce\\" : "src/"
+		}
+	},
+	"minimum-stability" : "stable",
+	"require" : {
+		"omnipay/common" : "^3.0",
+		"php-http/guzzle6-adapter" : "@dev"
+	},
+	"require-dev" : {
+		"omnipay/tests" : "^3.0"
+	}
+}
