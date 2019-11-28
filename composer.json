@@ -22,7 +22,7 @@
 	],
 	"autoload" : {
 		"psr-4" : {
-			"Omnipay\\Coinbase Commerce\\" : "src/"
+			"Omnipay\\CoinbaseCommerce\\" : "src/"
 		}
 	},
 	"minimum-stability" : "stable",
