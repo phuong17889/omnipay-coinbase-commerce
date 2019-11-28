@@ -2,65 +2,30 @@
 
 namespace Omnipay\CoinbaseCommerce\Message;
 
-use GuzzleHttp\Exception\BadResponseException;
+use CoinbaseCommerce\Resources\Charge;
+use CoinbaseCommerce\Resources\Checkout;
+use Omnipay\Common\Exception\InvalidRequestException;
+use Omnipay\Common\Message\ResponseInterface;
 
-/**
- * Class PurchaseRequest
- * @package Omnipay\CoinbaseCommerce\Message
- */
-class PurchaseRequest extends AbstractRequest {
-
-	/**
-	 * @return array|mixed
-	 * @throws \Omnipay\Common\Exception\InvalidRequestException
-	 */
-	public function getData() {
-		$this->validate('amount', 'currency1', 'currency2');
-		return [
-			'cmd'         => 'create_transaction',
-			'amount'      => $this->getAmount(),
-			'currency1'   => $this->getCurrency1(),
-			'currency2'   => $this->getCurrency2(),
-			'address'     => $this->getAddress(),
-			'buyer_email' => $this->getBuyerEmail(),
-			'buyer_name'  => $this->getBuyername(),
-			'item_name'   => $this->getItemName(),
-			'item_number' => $this->getItemNumber(),
-			'invoice'     => $this->getInvoice(),
-			'custom'      => $this->getCustom(),
-			'ipn_url'     => $this->getIPNUrl(),
-		];
-	}
+class PurchaseRequest extends CheckoutRequest {
 
 	/**
-	 * @param $hmac
+	 * Send the request with specified data
 	 *
-	 * @return array
-	 */
-	protected function getHeaders($hmac) {
-		return [
-			'HMAC'         => $hmac,
-			'Content-Type' => 'application/x-www-form-urlencoded',
-		];
-	}
-
-	/**
-	 * @param mixed $data
+	 * @param mixed $data The data to send
 	 *
-	 * @return PurchaseResponse|\Omnipay\Common\Message\ResponseInterface
+	 * @return ResponseInterface
+	 * @throws InvalidRequestException
 	 */
 	public function sendData($data) {
-		$hmac = $this->getSig($data, 'create_transaction');
-		$data['version'] = 1;
-		$data['cmd']     = 'create_transaction';
-		$data['key']     = $this->getPublicKey();
-		$data['format']  = 'json';
-		try {
-			$response = $this->httpClient->request('POST', $this->getEndpoint(), $this->getHeaders($hmac), http_build_query($data));
-		} catch (BadResponseException $e) {
-			$response = $e->getResponse();
-		}
-		$result = json_decode($response->getBody()->getContents(), true);
-		return new PurchaseResponse($this, $result);
+		$checkout                 = Checkout::create($this->getData());
+		$chargeData               = [
+			'cancel_url'  => null,
+			'checkout_id' => $checkout->id,
+			'metadata'    => [],
+		];
+		$purchaseResponse         = new PurchaseResponse($this, []);
+		$purchaseResponse->charge = Charge::create($chargeData);
+		return $purchaseResponse;
 	}
 }

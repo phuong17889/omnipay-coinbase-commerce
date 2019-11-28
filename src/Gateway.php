@@ -2,25 +2,37 @@
 
 namespace Omnipay\CoinbaseCommerce;
 
-use Omnipay\CoinbaseCommerce\Message\CheckPurchaseRequest;
+use CoinbaseCommerce\ApiClient;
 use Omnipay\CoinbaseCommerce\Message\CompletePurchaseRequest;
-use Omnipay\CoinbaseCommerce\Message\PayByNameRequest;
-use Omnipay\CoinbaseCommerce\Message\PurchaseRequest;
-use Omnipay\CoinbaseCommerce\Message\TransferRequest;
-use Omnipay\CoinbaseCommerce\Message\WithdrawalRequest;
+use Omnipay\CoinbaseCommerce\Message\ChargeRequest;
 use Omnipay\Common\AbstractGateway;
+use Omnipay\Common\Message\AbstractRequest;
+use Omnipay\Common\Message\RequestInterface;
 
 /**
  * Class Gateway
  * @package Omnipay\CoinbaseCommerce
+ * @method RequestInterface authorize(array $options = array())
+ * @method RequestInterface completeAuthorize(array $options = array())
+ * @method RequestInterface capture(array $options = array())
+ * @method RequestInterface refund(array $options = array())
+ * @method RequestInterface void(array $options = array())
+ * @method RequestInterface createCard(array $options = array())
+ * @method RequestInterface updateCard(array $options = array())
+ * @method RequestInterface deleteCard(array $options = array())
  */
 class Gateway extends AbstractGateway {
+
+	const NAME = 'CoinbaseCommerce';
+
+	/**@var ApiClient */
+	protected $coinbase;
 
 	/**
 	 * @return string
 	 */
 	public function getName() {
-		return 'Coinbase Commerce';
+		return self::NAME;
 	}
 
 	/**
@@ -28,50 +40,16 @@ class Gateway extends AbstractGateway {
 	 */
 	public function getDefaultParameters() {
 		return array(
-			'private_key' => '',
-			'public_key'  => '',
-			'ipn_secret'  => '',
-			'merchant_id' => '',
+			'api_key' => '',
+			'timeout' => 30,
 		);
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getMerchantId() {
-		return $this->getParameter('merchant_id');
-	}
-
-	/**
-	 * @param $value
-	 *
-	 * @return $this
-	 */
-	public function setMerchantId($value) {
-		return $this->setParameter('merchant_id', $value);
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getIpnSecret() {
-		return $this->getParameter('ipn_secret');
-	}
-
-	/**
-	 * @param $value
-	 *
-	 * @return \Omnipay\Common\Message\AbstractRequest
-	 */
-	public function setIpnSecret($value) {
-		return $this->setParameter('ipn_secret', $value);
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getPrivateKey() {
-		return $this->getParameter('private_key');
+	public function getApiKey() {
+		return $this->getParameter('api_key');
 	}
 
 	/**
@@ -79,15 +57,15 @@ class Gateway extends AbstractGateway {
 	 *
 	 * @return Gateway
 	 */
-	public function setPrivateKey($value) {
-		return $this->setParameter('private_key', $value);
+	public function setApiKey($value) {
+		return $this->setParameter('api_key', $value);
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getPublicKey() {
-		return $this->getParameter('public_key');
+	public function getTimeout() {
+		return $this->getParameter('timeout');
 	}
 
 	/**
@@ -95,53 +73,35 @@ class Gateway extends AbstractGateway {
 	 *
 	 * @return Gateway
 	 */
-	public function setPublicKey($value) {
-		return $this->setParameter('public_key', $value);
+	public function setTimeout($value) {
+		return $this->setParameter('timeout', $value);
 	}
 
 	/**
-	 * @return TransactionRequest
+	 * {@inheritDoc}
 	 */
-	public function purchase(array $parameters = array()) {
-		return $this->createRequest(PurchaseRequest::class, $parameters);
+	public function initialize(array $parameters = array()) {
+		$init           = parent::initialize($parameters);
+		$init->coinbase = ApiClient::init($init->getParameter('api_key'));
+		$init->coinbase->setTimeout($init->getParameter('timeout'));
+		return $init;
 	}
 
 	/**
 	 * @param array $parameters
 	 *
-	 * @return \Omnipay\Common\Message\AbstractRequest|\Omnipay\Common\Message\RequestInterface
+	 * @return ChargeRequest|AbstractRequest
 	 */
-	public function completePurchase(array $parameters = array()) {
+	public function purchase($parameters = array()) {
+		return $this->createRequest(ChargeRequest::class, $parameters);
+	}
+
+	/**
+	 * @param array $parameters
+	 *
+	 * @return AbstractRequest|RequestInterface
+	 */
+	public function completePurchase($parameters = array()) {
 		return $this->createRequest(CompletePurchaseRequest::class, $parameters);
-	}
-
-	/**
-	 * @param array $parameters
-	 *
-	 * @return \Omnipay\Common\Message\AbstractRequest|\Omnipay\Common\Message\RequestInterface
-	 */
-	public function checkPurchase(array $parameters = array()) {
-		return $this->createRequest(CheckPurchaseRequest::class, $parameters);
-	}
-
-	/**
-	 * @return PayByNameRequest
-	 */
-	public function PayByName(array $parameters = array()) {
-		return $this->createRequest(PayByNameRequest::class, $parameters);
-	}
-
-	/**
-	 * @return TransferRequest
-	 */
-	public function transfer(array $parameters = array()) {
-		return $this->createRequest(TransferRequest::class, $parameters);
-	}
-
-	/**
-	 * @return WithdrawalRequest
-	 */
-	public function withdrawal(array $parameters = array()) {
-		return $this->createRequest(WithdrawalRequest::class, $parameters);
 	}
 }

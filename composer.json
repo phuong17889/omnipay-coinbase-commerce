@@ -28,7 +28,8 @@
 	"minimum-stability" : "stable",
 	"require" : {
 		"omnipay/common" : "^3.0",
-		"php-http/guzzle6-adapter" : "@dev"
+		"php-http/guzzle6-adapter" : "@dev",
+		"coinbase/coinbase-commerce" : "^1.0"
 	},
 	"require-dev" : {
 		"omnipay/tests" : "^3.0"
