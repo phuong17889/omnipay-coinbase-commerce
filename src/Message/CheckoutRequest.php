@@ -18,14 +18,14 @@ class CheckoutRequest extends AbstractRequest {
 	public function getData() {
 		$this->validate('name', 'description', 'pricing_type', 'local_price_amount', 'local_price_currency');
 		return [
-			'name'         => $this->getName(),
-			'description'  => $this->getDescription(),
-			'pricing_type' => $this->getPricingType(),
-			'local_price'  => [
+			'name'           => $this->getName(),
+			'description'    => $this->getDescription(),
+			'pricing_type'   => $this->getPricingType(),
+			'local_price'    => [
 				'amount'   => $this->getLocalPriceAmount(),
 				'currency' => $this->getLocalPriceCurrency(),
 			],
-			'request_info' => $this->getRequestInfo(),
+			'requested_info' => $this->getRequestedInfo() != '' ? $this->getRequestedInfo() : [],
 		];
 	}
 

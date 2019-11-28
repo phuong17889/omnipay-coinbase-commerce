@@ -3,8 +3,10 @@
 namespace Omnipay\CoinbaseCommerce;
 
 use CoinbaseCommerce\ApiClient;
-use Omnipay\CoinbaseCommerce\Message\CompletePurchaseRequest;
 use Omnipay\CoinbaseCommerce\Message\ChargeRequest;
+use Omnipay\CoinbaseCommerce\Message\CheckoutRequest;
+use Omnipay\CoinbaseCommerce\Message\CompletePurchaseRequest;
+use Omnipay\CoinbaseCommerce\Message\PurchaseRequest;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Message\AbstractRequest;
 use Omnipay\Common\Message\RequestInterface;
@@ -81,10 +83,30 @@ class Gateway extends AbstractGateway {
 	 * {@inheritDoc}
 	 */
 	public function initialize(array $parameters = array()) {
-		$init           = parent::initialize($parameters);
-		$init->coinbase = ApiClient::init($init->getParameter('api_key'));
-		$init->coinbase->setTimeout($init->getParameter('timeout'));
+		$init = parent::initialize($parameters);
+		if (isset($parameters['api_key'])) {
+			$init->coinbase = ApiClient::init($parameters['api_key']);
+			$init->coinbase->setTimeout($init->getParameter('timeout'));
+		}
 		return $init;
+	}
+
+	/**
+	 * @param array $parameters
+	 *
+	 * @return PurchaseRequest|AbstractRequest
+	 */
+	public function purchase($parameters = array()) {
+		return $this->createRequest(PurchaseRequest::class, $parameters);
+	}
+
+	/**
+	 * @param array $parameters
+	 *
+	 * @return CheckoutRequest|AbstractRequest
+	 */
+	public function checkout($parameters = array()) {
+		return $this->createRequest(CheckoutRequest::class, $parameters);
 	}
 
 	/**
@@ -92,7 +114,7 @@ class Gateway extends AbstractGateway {
 	 *
 	 * @return ChargeRequest|AbstractRequest
 	 */
-	public function purchase($parameters = array()) {
+	public function charge($parameters = array()) {
 		return $this->createRequest(ChargeRequest::class, $parameters);
 	}
 

@@ -93,8 +93,8 @@ abstract class AbstractRequest extends BaseAbstractRequest {
 	/**
 	 * @return mixed
 	 */
-	public function getRequestInfo() {
-		return $this->getParameter('request_info');
+	public function getRequestedInfo() {
+		return $this->getParameter('requested_info');
 	}
 
 	/**
@@ -102,8 +102,8 @@ abstract class AbstractRequest extends BaseAbstractRequest {
 	 *
 	 * @return AbstractRequest
 	 */
-	public function setRequestInfo($value) {
-		return $this->setParameter('request_info', $value);
+	public function setRequestedInfo($value) {
+		return $this->setParameter('requested_info', $value);
 	}
 
 	/**
