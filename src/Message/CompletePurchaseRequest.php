@@ -2,6 +2,7 @@
 
 namespace Omnipay\CoinbaseCommerce\Message;
 
+use CoinbaseCommerce\Resources\Charge;
 use Omnipay\Common\Exception\InvalidResponseException;
 
 /**
@@ -10,36 +11,12 @@ use Omnipay\Common\Exception\InvalidResponseException;
  */
 class CompletePurchaseRequest extends AbstractRequest {
 
-	/**
-	 * @return mixed
-	 */
-	public function getMerchantId() {
-		return $this->getParameter('merchant_id');
+	public function getCode() {
+		return $this->getParameter('code');
 	}
 
-	/**
-	 * @param $value
-	 *
-	 * @return $this
-	 */
-	public function setMerchantId($value) {
-		return $this->setParameter('merchant_id', $value);
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getIpnSecret() {
-		return $this->getParameter('ipn_secret');
-	}
-
-	/**
-	 * @param $value
-	 *
-	 * @return \Omnipay\Common\Message\AbstractRequest
-	 */
-	public function setIpnSecret($value) {
-		return $this->setParameter('ipn_secret', $value);
+	public function setCode($value) {
+		return $this->setParameter('code', $value);
 	}
 
 	/**
@@ -47,27 +24,10 @@ class CompletePurchaseRequest extends AbstractRequest {
 	 * @throws InvalidResponseException
 	 */
 	public function getData() {
-		if ($this->httpRequest->request->get('currency1') != $this->getCurrency()) {
-			throw new InvalidResponseException('Invalid currency');
-		}
-		if (!isset($_POST['ipn_mode']) || $_POST['ipn_mode'] != 'hmac') {
-			throw new InvalidResponseException('IPN Mode is not HMAC');
-		}
-		if (!isset($_SERVER['HTTP_HMAC']) || empty($_SERVER['HTTP_HMAC'])) {
-			throw new InvalidResponseException('No HMAC signature sent.');
-		}
-		$request = http_build_query($this->httpRequest->request->all());
-		if ($request === false || empty($request)) {
-			throw new InvalidResponseException('Error reading POST data');
-		}
-		if (!isset($_POST['merchant']) || $_POST['merchant'] != $this->getMerchantId()) {
-			throw new InvalidResponseException('No or incorrect Merchant ID passed');
-		}
-		$hmac = hash_hmac("sha512", $request, $this->getIpnSecret());
-		if (!hash_equals($hmac, $_SERVER['HTTP_HMAC'])) {
-			throw new InvalidResponseException('HMAC signature does not match');
-		}
-		return $this->httpRequest->request->all();
+		$this->validate('code');
+		return [
+			'code' => $this->getCode(),
+		];
 	}
 
 	/**
@@ -76,6 +36,7 @@ class CompletePurchaseRequest extends AbstractRequest {
 	 * @return CompletePurchaseResponse|\Omnipay\Common\Message\ResponseInterface
 	 */
 	public function sendData($data) {
-		return $this->response = new CompletePurchaseResponse($this, $data);
+		$charge = Charge::retrieve($this->getCode());
+		return new CompletePurchaseResponse($this, $charge->getAttributes());
 	}
 }

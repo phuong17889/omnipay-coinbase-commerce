@@ -12,17 +12,60 @@ use Omnipay\Common\Message\RedirectResponseInterface;
 class CompletePurchaseResponse extends AbstractResponse implements RedirectResponseInterface {
 
 	/**
+	 * @return array|mixed
+	 */
+	public function getData() {
+		$data                     = parent::getData();
+		$response                 = [];
+		$response['checkout_id']  = $data['checkout']['id'];
+		$response['charge_id']    = $data['id'];
+		$response['code']         = $data['code'];
+		$response['created_at']   = $data['created_at'];
+		$response['confirmed_at'] = $data['confirmed_at'];
+		$timelines                = array_reverse($data['timeline']);
+		$response['status']       = $timelines[0]['status'];
+		if ($response['status'] == 'UNRESOLVED') {
+			$response['context'] = $timelines[0]['context'];
+		}
+		$response['updated_at']      = $timelines[0]['time'];
+		$response['context']         = '';
+		$response['network']         = '';
+		$response['tx']              = '';
+		$response['local_amount']    = '';
+		$response['local_currency']  = '';
+		$response['crypto_amount']   = '';
+		$response['crypto_currency'] = '';
+		$response['block_height']    = '';
+		$response['block_hash']      = '';
+		if (isset($data['payments']) && ($payment = current($data['payments'])) != null) {
+			$response['network'] = $payment['network'];
+			$response['tx']      = $payment['transaction_id'];
+			if (isset($payment['value'])) {
+				$response['local_amount']    = $payment['value']['local']['amount'];
+				$response['local_currency']  = $payment['value']['local']['currency'];
+				$response['crypto_amount']   = $payment['value']['crypto']['amount'];
+				$response['crypto_currency'] = $payment['value']['crypto']['currency'];
+			}
+			if (isset($payment['block'])) {
+				$response['block_height'] = $payment['block']['height'];
+				$response['block_hash']   = $payment['block']['hash'];
+			}
+		}
+		return $response;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function isSuccessful() {
-		return ($this->data['status'] >= 100 || $this->data['status'] == 2 || $this->data['status'] == 1) ? true : false;
+		return $this->data['status'] == 'COMPLETED' || $this->data['status'] == 'RESOLVED';
 	}
 
 	/**
 	 * @return bool
 	 */
 	public function isCancelled() {
-		return ($this->data['status'] < 0) ? true : false;
+		return $this->data['status'] == 'EXPIRED' || $this->data['status'] == 'CANCELED';
 	}
 
 	/**
@@ -50,34 +93,6 @@ class CompletePurchaseResponse extends AbstractResponse implements RedirectRespo
 	 * @return array|null
 	 */
 	public function getRedirectData() {
-		return null;
-	}
-
-	/**
-	 * @return int|string
-	 */
-	public function getTransactionId() {
-		return intval($this->data['txn_id']);
-	}
-
-	/**
-	 * @return float
-	 */
-	public function getAmount() {
-		return floatval($this->data['amount1']);
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getCurrency() {
-		return $this->data['currency1'];
-	}
-
-	/**
-	 * @return null|string
-	 */
-	public function getMessage() {
 		return null;
 	}
 }
