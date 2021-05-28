@@ -37,74 +37,31 @@ repository.
 ### Create a transaction
 
 ```php
-$gateway = Omnipay::create('Coinbase Commerce');
+$gateway = Omnipay::create(Gateway::NAME);
 
 $gateway->initialize(array(
-    'public_key' => '',
-    'private_key => ''
+    'api_key' => '',
+    'timeout' => 30,
 ));
 
-$response = $gateway->transaction([
-    'amount' => 10.00,
-    'currency1' => 'USD',
-    'currency2' => 'BTC',
-    //'address' => '', // leave blank send to follow your settings on the Coin Settings page
-    'item_name' => 'Test Item/Order Description',
-    'ipn_url' => 'https://yourserver.com/ipn_handler.php',
+$checkoutResponse = $gateway->checkout([
+    'name'                 => 'Payment',
+    'description'          => 'Payment description',
+    'pricing_type'         => 'fixed_price',
+    'local_price_amount'   => 10,
+    'local_price_currency' => 'USD',
 ])->send();
 
-if ($response->isSuccessful()) {
-    $data = $response->getData(); 
-}
-```
-
-### Make a withdrawal
-
-```php
-$gateway = Omnipay::create('Coinbase Commerce');
-
-$gateway->initialize(array(
-    'public_key' => '',
-    'private_key => ''
-));
-
-$response = $gateway->withdrawal([
-    'amount' => 0.1,
-    'currency' => 'BTC',
-    'address' => '1LC9Tn7ekRXhMTzh7ZJnZ55XUBM4ZGuLhJ'
-])->send();
-
-if ($response->isSuccessful()) {
-    $data = $response->getData(); 
-}
-```
-### Verify purchase using hook
-
-```php
-$gateway = Omnipay::create('Coinbase Commerce');
-$gateway->initialize(array(
-    'ipn_secret' => '',
-    'merchant_id => ''
-));
-$response = $gateway->completePurchase()->send();
-if ($response->isSuccessful()) {
-    $data = $response->getData(); 
-}
-```
-
-### Verify purchase by get detail
-
-```php
-$gateway = Omnipay::create('Coinbase Commerce');
-$gateway->initialize(array(
-    'public_key' => '',
-    'private_key => ''
-));
-$response = $gateway->checkPurchase([
-    'txid' = > '',
-])->send();
-if ($response->isSuccessful()) {
-    $data = $response->getData(); 
+if ($checkoutResponse->isSuccessful()) {
+    $checkoutData = $checkoutResponse->getData(); 
+    $chargeResponse = $gateway->charge([
+        'checkout_id' => $checkoutData['id'],
+        'cancel_url'  => null,
+        'metadata'    => [],
+    ])->send();
+    if ($chargeResponse->isSuccessful() && $chargeResponse->isRedirect()) {
+        return $chargeResponse->getRedirectUrl();
+    }
 }
 ```
 
