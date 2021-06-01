@@ -9,6 +9,7 @@ use Omnipay\CoinbaseCommerce\Message\CompletePurchaseRequest;
 use Omnipay\CoinbaseCommerce\Message\PurchaseRequest;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Message\AbstractRequest;
+use Omnipay\Common\Message\NotificationInterface;
 use Omnipay\Common\Message\RequestInterface;
 
 /**
@@ -22,6 +23,8 @@ use Omnipay\Common\Message\RequestInterface;
  * @method RequestInterface createCard(array $options = array())
  * @method RequestInterface updateCard(array $options = array())
  * @method RequestInterface deleteCard(array $options = array())
+ * @method NotificationInterface acceptNotification(array $options = array())
+ * @method RequestInterface fetchTransaction(array $options = [])
  */
 class Gateway extends AbstractGateway {
 
@@ -94,7 +97,7 @@ class Gateway extends AbstractGateway {
 	/**
 	 * @param array $parameters
 	 *
-	 * @return PurchaseRequest|AbstractRequest
+	 * @return AbstractRequest
 	 */
 	public function purchase($parameters = array()) {
 		return $this->createRequest(PurchaseRequest::class, $parameters);
@@ -103,7 +106,7 @@ class Gateway extends AbstractGateway {
 	/**
 	 * @param array $parameters
 	 *
-	 * @return CheckoutRequest|AbstractRequest
+	 * @return AbstractRequest
 	 */
 	public function checkout($parameters = array()) {
 		return $this->createRequest(CheckoutRequest::class, $parameters);
@@ -112,7 +115,7 @@ class Gateway extends AbstractGateway {
 	/**
 	 * @param array $parameters
 	 *
-	 * @return ChargeRequest|AbstractRequest
+	 * @return AbstractRequest
 	 */
 	public function charge($parameters = array()) {
 		return $this->createRequest(ChargeRequest::class, $parameters);

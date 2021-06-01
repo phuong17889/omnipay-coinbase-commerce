@@ -24,7 +24,7 @@ class PurchaseRequest extends CheckoutRequest {
 			'checkout_id' => $checkout->id,
 			'metadata'    => [],
 		];
-		$purchaseResponse         = new PurchaseResponse($this, []);
+		$purchaseResponse         = new PurchaseResponse($this, $checkout->getAttributes());
 		$purchaseResponse->charge = Charge::create($chargeData);
 		return $purchaseResponse;
 	}

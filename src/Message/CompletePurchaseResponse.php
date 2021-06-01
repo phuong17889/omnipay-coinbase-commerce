@@ -24,11 +24,11 @@ class CompletePurchaseResponse extends AbstractResponse implements RedirectRespo
 		$response['confirmed_at'] = $data['confirmed_at'];
 		$timelines                = array_reverse($data['timeline']);
 		$response['status']       = $timelines[0]['status'];
+		$response['context']      = '';
 		if ($response['status'] == 'UNRESOLVED') {
 			$response['context'] = $timelines[0]['context'];
 		}
 		$response['updated_at']      = $timelines[0]['time'];
-		$response['context']         = '';
 		$response['network']         = '';
 		$response['tx']              = '';
 		$response['local_amount']    = '';

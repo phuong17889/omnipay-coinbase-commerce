@@ -47,6 +47,6 @@ class ChargeResponse extends AbstractResponse {
 	 * @return mixed
 	 */
 	public function getData() {
-		return $this->charge->getAttributes();
+		$response = $this->charge->getAttributes();
 	}
 }
