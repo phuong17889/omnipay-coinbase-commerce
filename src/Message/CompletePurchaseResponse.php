@@ -58,14 +58,16 @@ class CompletePurchaseResponse extends AbstractResponse implements RedirectRespo
 	 * @return bool
 	 */
 	public function isSuccessful() {
-		return $this->data['status'] == 'COMPLETED' || $this->data['status'] == 'RESOLVED';
+		$response = $this->getData();
+		return $response['status'] == 'COMPLETED' || $response['status'] == 'RESOLVED';
 	}
 
 	/**
 	 * @return bool
 	 */
 	public function isCancelled() {
-		return $this->data['status'] == 'EXPIRED' || $this->data['status'] == 'CANCELED';
+		$response = $this->getData();
+		return $response['status'] == 'EXPIRED' || $response['status'] == 'CANCELED';
 	}
 
 	/**
