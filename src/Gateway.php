@@ -7,6 +7,7 @@ use Omnipay\CoinbaseCommerce\Message\ChargeRequest;
 use Omnipay\CoinbaseCommerce\Message\CheckoutRequest;
 use Omnipay\CoinbaseCommerce\Message\CompletePurchaseRequest;
 use Omnipay\CoinbaseCommerce\Message\PurchaseRequest;
+use Omnipay\CoinbaseCommerce\Message\ValidatePurchaseRequest;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Message\AbstractRequest;
 use Omnipay\Common\Message\NotificationInterface;
@@ -15,15 +16,15 @@ use Omnipay\Common\Message\RequestInterface;
 /**
  * Class Gateway
  * @package Omnipay\CoinbaseCommerce
- * @method RequestInterface authorize(array $options = array())
- * @method RequestInterface completeAuthorize(array $options = array())
- * @method RequestInterface capture(array $options = array())
- * @method RequestInterface refund(array $options = array())
- * @method RequestInterface void(array $options = array())
- * @method RequestInterface createCard(array $options = array())
- * @method RequestInterface updateCard(array $options = array())
- * @method RequestInterface deleteCard(array $options = array())
- * @method NotificationInterface acceptNotification(array $options = array())
+ * @method RequestInterface authorize(array $options = [])
+ * @method RequestInterface completeAuthorize(array $options = [])
+ * @method RequestInterface capture(array $options = [])
+ * @method RequestInterface refund(array $options = [])
+ * @method RequestInterface void(array $options = [])
+ * @method RequestInterface createCard(array $options = [])
+ * @method RequestInterface updateCard(array $options = [])
+ * @method RequestInterface deleteCard(array $options = [])
+ * @method NotificationInterface acceptNotification(array $options = [])
  * @method RequestInterface fetchTransaction(array $options = [])
  */
 class Gateway extends AbstractGateway {
@@ -95,38 +96,47 @@ class Gateway extends AbstractGateway {
 	}
 
 	/**
-	 * @param array $parameters
+	 * @param array $options
 	 *
 	 * @return AbstractRequest
 	 */
-	public function purchase($parameters = array()) {
-		return $this->createRequest(PurchaseRequest::class, $parameters);
+	public function purchase($options = []) {
+		return $this->createRequest(PurchaseRequest::class, $options);
 	}
 
 	/**
-	 * @param array $parameters
+	 * @param array $options
 	 *
 	 * @return AbstractRequest
 	 */
-	public function checkout($parameters = array()) {
-		return $this->createRequest(CheckoutRequest::class, $parameters);
+	public function checkout($options = []) {
+		return $this->createRequest(CheckoutRequest::class, $options);
 	}
 
 	/**
-	 * @param array $parameters
+	 * @param array $options
 	 *
 	 * @return AbstractRequest
 	 */
-	public function charge($parameters = array()) {
-		return $this->createRequest(ChargeRequest::class, $parameters);
+	public function charge($options = []) {
+		return $this->createRequest(ChargeRequest::class, $options);
 	}
 
 	/**
-	 * @param array $parameters
+	 * @param array $options
 	 *
 	 * @return AbstractRequest|RequestInterface
 	 */
-	public function completePurchase($parameters = array()) {
-		return $this->createRequest(CompletePurchaseRequest::class, $parameters);
+	public function completePurchase($options = []) {
+		return $this->createRequest(CompletePurchaseRequest::class, $options);
+	}
+
+	/**
+	 * @param array $options
+	 *
+	 * @return AbstractRequest|RequestInterface
+	 */
+	public function validatePurchase($options = []) {
+		return $this->createRequest(ValidatePurchaseRequest::class, $options);
 	}
 }

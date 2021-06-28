@@ -61,7 +61,7 @@ $gateway->initialize(array(
     'api_key' => '',
     'timeout' => 30,
 ));
-$response = $gateway->purchase([
+$response = $gateway->completePurchase([
     'code' => '',//todo charge Id
 ])->send();
 if ($response->isSuccessful()) {

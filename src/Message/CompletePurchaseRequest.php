@@ -5,7 +5,6 @@ namespace Omnipay\CoinbaseCommerce\Message;
 use CoinbaseCommerce\Resources\Charge;
 use Exception;
 use Omnipay\Common\Exception\InvalidRequestException;
-use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Common\Message\ResponseInterface;
 
 /**
