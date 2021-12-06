@@ -21,7 +21,7 @@ class CompletePurchaseResponse extends AbstractResponse implements RedirectRespo
 		$response['charge_id']    = $data['id'];
 		$response['code']         = $data['code'];
 		$response['created_at']   = $data['created_at'];
-		$response['confirmed_at'] = $data['confirmed_at'];
+		$response['confirmed_at'] = $data['confirmed_at'] ?? null;
 		$timelines                = array_reverse($data['timeline']);
 		$response['status']       = $timelines[0]['status'];
 		$response['context']      = '';
