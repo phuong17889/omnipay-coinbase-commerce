@@ -12,7 +12,7 @@ Omnipay is installed via [Composer](http://getcomposer.org/). To install, simply
 ```json
 {
 	"require" : {
-		"navatech/omnipay-coinbase-commerce" : "@dev"
+		"phuong17889/omnipay-coinbase-commerce" : "@dev"
 	}
 }
 ```
@@ -79,5 +79,5 @@ If you want to keep up to date with release anouncements, discuss ideas for the 
 there is also a [mailing list](https://groups.google.com/forum/#!forum/omnipay) which you can subscribe to.
 
 If you believe you have found a bug, please report it using
-the [GitHub issue tracker](https://github.com/navatech/omnipay-coinbase-commerce/issues), or better yet, fork the
+the [GitHub issue tracker](https://github.com/phuong17889/omnipay-coinbase-commerce/issues), or better yet, fork the
 library and submit a pull request.

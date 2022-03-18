@@ -1,5 +1,5 @@
 {
-	"name" : "navatech/omnipay-coinbase-commerce",
+	"name" : "phuong17889/omnipay-coinbase-commerce",
 	"type" : "library",
 	"description" : "Coinbase Commerce driver for the Omnipay payment processing library",
 	"keywords" : [
@@ -12,7 +12,7 @@
 		"pay",
 		"payment"
 	],
-	"homepage" : "https://github.com/navatech/omnipay-coinbase-commerce",
+	"homepage" : "https://github.com/phuong17889/omnipay-coinbase-commerce",
 	"license" : "MIT",
 	"authors" : [
 		{
